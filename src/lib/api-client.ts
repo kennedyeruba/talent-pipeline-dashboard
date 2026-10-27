@@ -1,5 +1,5 @@
 import type { Stage } from "./stages";
-import type { ListCandidatesResponse } from "./types";
+import type { CandidateDTO, ListCandidatesResponse } from "./types";
 
 export type CandidateQuery = {
   q?: string;
@@ -35,6 +35,16 @@ export async function fetchCandidates(
   if (stage) params.set("stage", stage);
 
   const response = await fetch(`/api/candidates?${params}`, { signal });
+  if (!response.ok) throw new ApiError(response.status, await errorMessage(response));
+  return response.json();
+}
+
+export async function updateCandidateStage(id: number, stage: Stage): Promise<CandidateDTO> {
+  const response = await fetch(`/api/candidates/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ stage }),
+  });
   if (!response.ok) throw new ApiError(response.status, await errorMessage(response));
   return response.json();
 }
