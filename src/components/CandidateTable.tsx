@@ -14,19 +14,19 @@ export function CandidateTable({ candidates, pendingIds, onStageChange }: Props)
       <table className="w-full text-left text-sm">
         <thead className="border-b border-slate-200 bg-slate-50 text-slate-600">
           <tr>
-            <th scope="col" className="px-4 py-3 font-medium">Name</th>
-            <th scope="col" className="px-4 py-3 font-medium">Role</th>
-            <th scope="col" className="px-4 py-3 font-medium">Stage</th>
+            <th scope="col" className="px-3 py-3 sm:px-4 font-medium">Name</th>
+            <th scope="col" className="px-3 py-3 sm:px-4 font-medium">Role</th>
+            <th scope="col" className="px-3 py-3 sm:px-4 font-medium">Stage</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100">
           {candidates.map((candidate) => (
             <tr key={candidate.id}>
-              <th scope="row" className="px-4 py-3 font-medium whitespace-nowrap">
+              <th scope="row" className="px-3 py-3 font-medium sm:px-4">
                 {candidate.name}
               </th>
-              <td className="px-4 py-3 whitespace-nowrap text-slate-600">{candidate.role}</td>
-              <td className="px-4 py-3">
+              <td className="px-3 py-3 text-slate-600 sm:px-4">{candidate.role}</td>
+              <td className="px-3 py-3 sm:px-4">
                 <div className="flex items-center gap-2">
                   <StageSelect
                     name={candidate.name}
