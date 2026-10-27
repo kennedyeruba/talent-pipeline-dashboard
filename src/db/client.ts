@@ -1,3 +1,4 @@
+import { mkdirSync } from "node:fs";
 import { createClient } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
 import * as schema from "./schema";
@@ -5,6 +6,8 @@ import * as schema from "./schema";
 export const DEFAULT_DATABASE_URL = "file:./data/talent.db";
 
 export function createDb(url: string = process.env.DATABASE_URL ?? DEFAULT_DATABASE_URL) {
+  // SQLite will not create the folder for the default file location.
+  if (url === DEFAULT_DATABASE_URL) mkdirSync("data", { recursive: true });
   return drizzle(createClient({ url }), { schema });
 }
 
