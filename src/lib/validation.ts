@@ -1,7 +1,9 @@
 import { z } from "zod";
 import { STAGES } from "./stages";
 
-export const stageSchema = z.enum(STAGES);
+export const stageSchema = z.enum(STAGES, {
+  error: `Stage must be one of: ${STAGES.join(", ")}`,
+});
 
 /** Query string for GET /api/candidates. Blank values are treated as "not set". */
 export const listCandidatesQuerySchema = z.object({
