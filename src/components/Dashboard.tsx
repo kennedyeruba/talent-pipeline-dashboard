@@ -6,6 +6,9 @@ import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import type { Stage } from "@/lib/stages";
 import { CandidateTable } from "./CandidateTable";
 import { SearchBar } from "./SearchBar";
+import { EmptyState } from "./states/EmptyState";
+import { ErrorState } from "./states/ErrorState";
+import { LoadingRows } from "./states/LoadingRows";
 import { StageSummary } from "./StageSummary";
 import { Toast, type ToastMessage } from "./Toast";
 
@@ -16,7 +19,7 @@ export function Dashboard() {
 
   const [toast, setToast] = useState<ToastMessage>();
 
-  const { candidates, counts, status, error, isRefreshing, pendingIds, updateStage } =
+  const { candidates, counts, status, error, isRefreshing, pendingIds, refetch, updateStage } =
     useCandidates({ q, stage });
 
   useEffect(() => {
@@ -24,6 +27,11 @@ export function Dashboard() {
     const timer = setTimeout(() => setToast(undefined), 4000);
     return () => clearTimeout(timer);
   }, [toast]);
+
+  function clearFilters() {
+    setSearch("");
+    setStage(undefined);
+  }
 
   async function handleStageChange(id: number, nextStage: Stage) {
     const result = await updateStage(id, nextStage);
@@ -44,9 +52,12 @@ export function Dashboard() {
       <SearchBar value={search} onChange={setSearch} />
       <StageSummary counts={counts} activeStage={stage} onSelect={setStage} />
 
-      {status === "loading" && <p className="text-sm text-slate-600">Loading…</p>}
-      {status === "error" && <p className="text-sm text-red-700">{error}</p>}
-      {status === "success" && (
+      {status === "loading" && <LoadingRows />}
+      {status === "error" && <ErrorState message={error} onRetry={refetch} />}
+      {status === "success" && candidates.length === 0 && (
+        <EmptyState q={q} stage={stage} onClearFilters={clearFilters} />
+      )}
+      {status === "success" && candidates.length > 0 && (
         <div aria-busy={isRefreshing} className={isRefreshing ? "opacity-70 transition-opacity" : undefined}>
           <CandidateTable
             candidates={candidates}

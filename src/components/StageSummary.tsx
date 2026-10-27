@@ -11,7 +11,9 @@ type Props = {
 export function StageSummary({ counts, activeStage, onSelect }: Props) {
   return (
     <section aria-label="Filter by stage">
-      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <ul
+        className={`grid grid-cols-2 gap-3 sm:grid-cols-4 ${counts ? "" : "animate-pulse opacity-60"}`}
+      >
         {STAGES.map((stage) => {
           const isActive = stage === activeStage;
           return (
