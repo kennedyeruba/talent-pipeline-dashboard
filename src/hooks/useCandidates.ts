@@ -24,27 +24,33 @@ export function useCandidates({ q, stage }: CandidateQuery) {
   const [pendingIds, setPendingIds] = useState<ReadonlySet<number>>(new Set());
   const controllerRef = useRef<AbortController | null>(null);
 
-  const refetch = useCallback(async () => {
-    controllerRef.current?.abort();
-    const controller = new AbortController();
-    controllerRef.current = controller;
+  // A silent load updates the data without the refreshing indicator.
+  const load = useCallback(
+    async (silent: boolean) => {
+      controllerRef.current?.abort();
+      const controller = new AbortController();
+      controllerRef.current = controller;
 
-    setIsRefreshing(true);
-    // Retrying after a failure goes back to the loading state; otherwise keep showing old rows.
-    setStatus((current) => (current === "error" ? "loading" : current));
+      if (!silent) setIsRefreshing(true);
+      // Retrying after a failure goes back to the loading state; otherwise keep showing old rows.
+      setStatus((current) => (current === "error" ? "loading" : current));
 
-    try {
-      setData(await fetchCandidates({ q, stage }, controller.signal));
-      setError(undefined);
-      setStatus("success");
-    } catch (err) {
-      if (controller.signal.aborted) return;
-      setError(err instanceof Error ? err.message : "Couldn't load candidates.");
-      setStatus("error");
-    } finally {
-      if (!controller.signal.aborted) setIsRefreshing(false);
-    }
-  }, [q, stage]);
+      try {
+        setData(await fetchCandidates({ q, stage }, controller.signal));
+        setError(undefined);
+        setStatus("success");
+      } catch (err) {
+        if (controller.signal.aborted) return;
+        setError(err instanceof Error ? err.message : "Couldn't load candidates.");
+        setStatus("error");
+      } finally {
+        if (!controller.signal.aborted) setIsRefreshing(false);
+      }
+    },
+    [q, stage],
+  );
+
+  const refetch = useCallback(() => load(false), [load]);
 
   useEffect(() => {
     refetch();
@@ -79,7 +85,7 @@ export function useCandidates({ q, stage }: CandidateQuery) {
       try {
         const candidate = await updateCandidateStage(id, stage);
         // Reconcile counts and filter membership with the server.
-        await refetch();
+        await load(true);
         return { ok: true, candidate };
       } catch (err) {
         setLocalStage(id, previous);
@@ -88,7 +94,7 @@ export function useCandidates({ q, stage }: CandidateQuery) {
         setPending(id, false);
       }
     },
-    [data, refetch, setLocalStage, setPending],
+    [data, load, setLocalStage, setPending],
   );
 
   return {

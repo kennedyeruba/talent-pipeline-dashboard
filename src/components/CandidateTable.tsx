@@ -20,27 +20,33 @@ export function CandidateTable({ candidates, pendingIds, onStageChange }: Props)
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100">
-          {candidates.map((candidate) => (
-            <tr key={candidate.id}>
-              <th scope="row" className="px-3 py-3 font-medium sm:px-4">
-                {candidate.name}
-              </th>
-              <td className="px-3 py-3 text-slate-600 sm:px-4">{candidate.role}</td>
-              <td className="px-3 py-3 sm:px-4">
-                <div className="flex items-center gap-2">
-                  <StageSelect
-                    name={candidate.name}
-                    stage={candidate.stage}
-                    disabled={pendingIds.has(candidate.id)}
-                    onChange={(stage) => onStageChange(candidate.id, stage)}
-                  />
-                  {pendingIds.has(candidate.id) && (
-                    <span className="animate-pulse text-xs text-slate-500">Saving…</span>
-                  )}
-                </div>
-              </td>
-            </tr>
-          ))}
+          {candidates.map((candidate) => {
+            const isPending = pendingIds.has(candidate.id);
+            return (
+              <tr key={candidate.id}>
+                <th scope="row" className="px-3 py-3 font-medium sm:px-4">
+                  {candidate.name}
+                </th>
+                <td className="px-3 py-3 text-slate-600 sm:px-4">{candidate.role}</td>
+                <td className="px-3 py-3 sm:px-4">
+                  <div className="flex items-center gap-1.5">
+                    <StageSelect
+                      name={candidate.name}
+                      stage={candidate.stage}
+                      disabled={isPending}
+                      onChange={(stage) => onStageChange(candidate.id, stage)}
+                    />
+                    {/* Always rendered so the column width does not change while saving. */}
+                    <span
+                      aria-hidden
+                      className={`size-3 animate-spin rounded-full border-2 border-slate-400 border-t-transparent ${isPending ? "" : "invisible"}`}
+                    />
+                    {isPending && <span className="sr-only">Saving…</span>}
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
