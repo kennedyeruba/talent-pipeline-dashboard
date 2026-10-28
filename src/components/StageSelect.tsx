@@ -26,7 +26,7 @@ export function StageSelect({ name, stage, disabled, onChange }: Props) {
           </option>
         ))}
       </select>
-      {/* The native arrow ignores padding, so draw one with a fixed gap from the edge. */}
+      
       <svg
         aria-hidden
         viewBox="0 0 20 20"

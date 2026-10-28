@@ -36,7 +36,7 @@ export function CandidateTable({ candidates, pendingIds, onStageChange }: Props)
                       disabled={isPending}
                       onChange={(stage) => onStageChange(candidate.id, stage)}
                     />
-                    {/* Always rendered so the column width does not change while saving. */}
+                    
                     <span
                       aria-hidden
                       className={`size-3 animate-spin rounded-full border-2 border-slate-400 border-t-transparent ${isPending ? "" : "invisible"}`}

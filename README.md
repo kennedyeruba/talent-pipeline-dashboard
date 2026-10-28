@@ -2,10 +2,6 @@
 
 A recruiter dashboard for tracking candidates through four hiring stages: Sourced, Screening, Interview and Hired.
 
-Demo video: _link to be added_
-
-<!-- ![Screenshot](docs/screenshot.png) -->
-
 ## Features
 
 - **View candidates** with name, role and current stage in an accessible table.
@@ -32,7 +28,7 @@ npm run db:reset     # restore the sample candidates
 npm run typecheck && npm run lint && npm run build
 ```
 
-The database lives at `./data/talent.db`. Set `DATABASE_URL` (for example `file:./other.db`) to use a different one.
+The database lives at `./data/talent.db`.
 
 ## Tech stack
 

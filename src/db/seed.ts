@@ -15,7 +15,7 @@ export const SEED_CANDIDATES: ReadonlyArray<Pick<NewCandidate, "name" | "role" |
   { name: "Yaw Boateng", role: "Engineering Manager", stage: "Screening" },
 ];
 
-/** Replace all candidates with the sample set. Safe to run repeatedly. */
+/** Replace all candidates with the sample set.*/
 export async function seed(db: Db) {
   await db.transaction(async (tx) => {
     await tx.delete(candidates);
