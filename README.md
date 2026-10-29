@@ -2,6 +2,8 @@
 
 A recruiter dashboard for tracking candidates through four hiring stages: Sourced, Screening, Interview and Hired.
 
+![Talent Pipeline demo](docs/Talent_Pipeline_Demo.gif)
+
 ## Features
 
 - **View candidates** with name, role and current stage in an accessible table.
